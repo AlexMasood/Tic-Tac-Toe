@@ -22,8 +22,8 @@ class Board:
         
     
     def checkRow(row, player):
-        for index in row:
-            if (row[index] != player):
+        for index in range(0,2):
+            if (row[index] != player):#potentially add a check to see if row[index] isnt 0, may be faster than assignment
                 row[index] = 0
         if(all(row)):
             return True

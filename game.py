@@ -13,31 +13,28 @@ class Game:
             board = self.playerMove(board,1)
             turn += 1
             if(b.checkBoard(board, 1)):
-                print("player 1 has won!")
+                print("Player 1 has won")
                 self.beingPlayed = False
             else:
                 if(turn > 8):
-                    print("draw")
+                    print("Draw")
                     self.beingPlayed = False
                 else:
                     board = self.playerMove(board,2)
                     turn += 1
                     if(b.checkBoard(board, 2)):
-                        print("player 2 has won!")
+                        print("Player 2 has won")
                         self.beingPlayed = False
 
 
     def playerMove(self,board,player):
-        row = int(input("enter row: "))
-        col = int(input("enter column: "))
+        row = int(input("Enter row: "))
+        col = int(input("Enter column: "))
         while((0 <= row <= 2) and (0 <= col <= 2) and b.checkMove(board,row,col) != True):
-            row = int(input("enter row between or equal to 0 and 2: "))
-            col = int(input("enter column between or equal to 0 and 2: "))
-        
-        print(b.checkMove(board,row,col))
+            row = int(input("Enter row between or equal to 0 and 2: "))
+            col = int(input("Enter column between or equal to 0 and 2: "))
         if(b.checkMove(board,row,col) == True):
             board = b.move(board,player,row,col)
         b.printBoard(board)
         return board
-g = Game()
-g.GameLoop()
+Game().GameLoop()
