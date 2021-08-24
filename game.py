@@ -13,7 +13,7 @@ class Game:
             board = self.playerMove(board,1)
             turn += 1
             if(b.checkBoard(board, 1)):
-                print("player 1 has won")
+                print("player 1 has won!")
                 self.beingPlayed = False
             else:
                 if(turn > 8):
@@ -23,7 +23,7 @@ class Game:
                     board = self.playerMove(board,2)
                     turn += 1
                     if(b.checkBoard(board, 2)):
-                        print("player 2 has won")
+                        print("player 2 has won!")
                         self.beingPlayed = False
 
 
