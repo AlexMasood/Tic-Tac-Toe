@@ -42,6 +42,7 @@ class Game:
     outputs the board
     """
     def playerMove(self,board,player):
+        print("It is player "+str(player)+"'s turn.")
         row = int(input("Enter row: "))
         col = int(input("Enter column: "))
         while(not(0 <= row <= 2) or not(0 <= col <= 2) or b.checkMove(board,row,col) != True):
