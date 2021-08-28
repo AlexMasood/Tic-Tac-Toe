@@ -1,34 +1,40 @@
 import numpy as np
 class Board:
-    def createBoard():
-        board = np.array([[0, 0, 0],[0, 0, 0],[0, 0, 0]])
+    def __init__(self):
+        self.board = np.array([[0, 0, 0],[0, 0, 0],[0, 0, 0]])
+        
+    """
+    def createBoard(self):
+        self.board = np.array([[0, 0, 0],[0, 0, 0],[0, 0, 0]])
         return board
-    
+    """
+    def getBoard(self):
+        return self.board
     """
     input of the board 3 by 3 numpy array, player int, row number int, column number int
     checks if move is legal and sets the new board as its output
     returns 0 if check fails
     """
-    def move(board,player,rowNum,colNum):
-        if(Board.checkMove(board,rowNum,colNum)):
-            board[rowNum][colNum] = player
-            return board
+    def move(self,player,rowNum,colNum):
+        if(self.checkMove(rowNum,colNum)):
+            self.board[rowNum][colNum] = player
+            return True
         else:
-            return 0
+            return False
 
     """
     input of the board 3 by 3 numpy array, row number int, row column int
     checks if placing a move in the given coordinates are legal
     returns true if legal, false if not
     """
-    def checkMove(board,rowNum,colNum):
-        if(board[rowNum][colNum] == 0):
+    def checkMove(self,rowNum,colNum):
+        if(self.getBoard()[rowNum][colNum] == 0):
             return True
         else:
             return False
     
-    def printBoard(board):
-        print(board)
+    def printBoard(self):
+        print(self.board)
         
     """
     input of the row 3 element array, player int
@@ -36,9 +42,9 @@ class Board:
     checks if the list contains 3 of the players move
     returns true if check passes, else false
     """
-    def checkRow(row, player):
+    def checkRow(self,row, player):
         for index in range(0,2):
-            if (row[index] != player):#potentially add a check to see if row[index] isnt 0, may be faster than assignment
+            if (row[index] != player):
                 row[index] = 0
         if(all(row)):
             return True
@@ -54,14 +60,29 @@ class Board:
     repeats the loop
     returns true if win condition has been met
     """
-    def checkBoard(board, player):
-        boardCopy = np.copy(board)
+    def checkBoard(self,player):
+        boardCopy = np.copy(self.board)
         for x in range(0,2):
             for row in boardCopy:
-                if (Board.checkRow(row,player)):
+                if (self.checkRow(row,player)):
                     return True
             diag = [boardCopy[0][0],boardCopy[1][1],boardCopy[2][2]]
-            if (Board.checkRow(diag,player)):
+            if (self.checkRow(diag,player)):
                 return True
             boardCopy = np.rot90(boardCopy)
-                    
+    """
+    Checks and returns remaining possible moves
+    """
+    def getRemainingMoves(self,board):
+        remainingMoves = []
+        for row in range(0,3):
+            for col in range(0,3):
+                if(board[row][col] == 0):
+                    remainingMoves.append([row,col])
+        return remainingMoves
+    
+    """
+    Check and returns how many spaces are remaining
+    """
+    def openSpaces(self):
+        return np.count_nonzero(self.board == 0)

@@ -14,12 +14,12 @@ class Game:
     """
     def GameLoop(self):
         turn = 0
-        board = b.createBoard()
-        b.printBoard(board)
+        boardObj = b()
+        boardObj.printBoard()
         while (self.beingPlayed):
-            board = self.playerMove(board,1)
+            self.playerMove(boardObj,1)
             turn += 1
-            if(b.checkBoard(board, 1)):
+            if(boardObj.checkBoard(1)):
                 print("Player 1 has won")
                 self.beingPlayed = False
             else:
@@ -27,9 +27,9 @@ class Game:
                     print("Draw")
                     self.beingPlayed = False
                 else:
-                    board = self.playerMove(board,2)
+                    self.playerMove(boardObj,2)
                     turn += 1
-                    if(b.checkBoard(board, 2)):
+                    if(boardObj.checkBoard(2)):
                         print("Player 2 has won")
                         self.beingPlayed = False
 
@@ -45,12 +45,12 @@ class Game:
         print("It is player "+str(player)+"'s turn.")
         row = int(input("Enter row: "))
         col = int(input("Enter column: "))
-        while(not(0 <= row <= 2) or not(0 <= col <= 2) or b.checkMove(board,row,col) != True):
+        while(not(0 <= row <= 2) or not(0 <= col <= 2) or board.checkMove(row,col) != True):
             print("Make sure the coordinate hasn't been previously used.")
             row = int(input("Enter row between or equal to 0 and 2: "))
             col = int(input("Enter column between or equal to 0 and 2: "))
-        if(b.checkMove(board,row,col) == True):
-            board = b.move(board,player,row,col)
-        b.printBoard(board)
-        return board
+        if(board.checkMove(row,col) == True):
+            board.move(player,row,col)
+        board.printBoard()
+        
 Game().GameLoop()
