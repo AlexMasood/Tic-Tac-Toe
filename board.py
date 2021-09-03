@@ -43,7 +43,7 @@ class Board:
     returns true if check passes, else false
     """
     def checkRow(self,row, player):
-        for index in range(0,2):
+        for index in range(0,3):
             if (row[index] != player):
                 row[index] = 0
         if(all(row)):

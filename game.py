@@ -1,4 +1,5 @@
 from board import Board as b
+from ai import AI
 import numpy as np
 class Game:
     def __init__(self):
@@ -14,10 +15,12 @@ class Game:
     """
     def GameLoop(self):
         turn = 0
+        ai = AI()
         boardObj = b()
         boardObj.printBoard()
         while (self.beingPlayed):
-            self.playerMove(boardObj,1)
+            ai.randomMove(boardObj,1)
+            #self.playerMove(boardObj,1)
             turn += 1
             if(boardObj.checkBoard(1)):
                 print("Player 1 has won")
@@ -27,7 +30,8 @@ class Game:
                     print("Draw")
                     self.beingPlayed = False
                 else:
-                    self.playerMove(boardObj,2)
+                    ai.randomMove(boardObj,2)
+                    #self.playerMove(boardObj,2)
                     turn += 1
                     if(boardObj.checkBoard(2)):
                         print("Player 2 has won")
