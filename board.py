@@ -2,14 +2,29 @@ import numpy as np
 class Board:
     def __init__(self):
         self.board = np.array([[0, 0, 0],[0, 0, 0],[0, 0, 0]])
+        self.boardHash = None
+        self.isEnd = False
         
-    """
-    def createBoard(self):
-        self.board = np.array([[0, 0, 0],[0, 0, 0],[0, 0, 0]])
-        return board
-    """
+
     def getBoard(self):
         return self.board
+
+    """
+    Creates a hash of the current board returns board hash
+    """
+    def getHash(self):
+        self.boardHash = str(self.board.reshape(9))
+        return self.boardHash
+    
+    
+    
+    """
+    resets all dates for training
+    """
+    def reset(self):
+        self.board = np.array([[0, 0, 0],[0, 0, 0],[0, 0, 0]])
+        self.boardHash = None
+        self.isEnd = False
     """
     input of the board 3 by 3 numpy array, player int, row number int, column number int
     checks if move is legal and sets the new board as its output
@@ -65,9 +80,11 @@ class Board:
         for x in range(0,2):
             for row in boardCopy:
                 if (self.checkRow(row,player)):
+                    self.isEnd = True
                     return True
             diag = [boardCopy[0][0],boardCopy[1][1],boardCopy[2][2]]
             if (self.checkRow(diag,player)):
+                self.isEnd = True
                 return True
             boardCopy = np.rot90(boardCopy)
     """
