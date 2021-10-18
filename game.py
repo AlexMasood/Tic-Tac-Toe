@@ -125,21 +125,20 @@ class Game:
                 if(pygame.mouse.get_pressed()[0]):#left
                     if(humanTurn):
                         pos = pygame.mouse.get_pos()
-
                         p1Action = [int(pos[0]/self.pixelSize),int(pos[1]/self.pixelSize)]
-                        print(p1Action)
-                        boardObj.move(1,p1Action[0],p1Action[1])
-                        boardHash = boardObj.getHash()
-                        self.p1.addState(boardHash)
-                        humanTurn = not humanTurn
-                        if(boardObj.checkBoard(1)):
-                            print(self.p1.getName() + " has won")
-                            boardObj.reset()
-                            break
-                        elif not(boardObj.getRemainingMoves(boardObj.getBoard())):
-                            print("draw")
-                            boardObj.reset()
-                            break
+                        if(p1Action in boardObj.getRemainingMoves(boardObj.getBoard())):
+                            boardObj.move(1,p1Action[0],p1Action[1])
+                            boardHash = boardObj.getHash()
+                            self.p1.addState(boardHash)
+                            humanTurn = not humanTurn
+                            if(boardObj.checkBoard(1)):
+                                print(self.p1.getName() + " has won")
+                                boardObj.reset()
+                                break
+                            elif not(boardObj.getRemainingMoves(boardObj.getBoard())):
+                                print("draw")
+                                boardObj.reset()
+                                break
             if(not humanTurn):
 
                 positions = boardObj.getRemainingMoves(boardObj.getBoard())
@@ -147,8 +146,6 @@ class Game:
                 boardObj.move(2,p2Action[0],p2Action[1])
                 boardHash = boardObj.getHash()
                 self.p2.addState(boardHash)
-                boardObj.printBoard()
-                print("######")
                 if(boardObj.checkBoard(2)):
                     print(self.p2.getName() + " has won")
                     boardObj.reset()
