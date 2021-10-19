@@ -1,7 +1,10 @@
 import numpy as np
 class Board:
-    def __init__(self):
-        self.board = np.array([[0, 0, 0],[0, 0, 0],[0, 0, 0]])
+    def __init__(self,row = 3,col = 3,winNum = 3):
+        self.board = np.zeros((row,col))
+        self.col = col
+        self.row = row
+        self.winNum = winNum
         self.boardHash = None
         self.isEnd = False
         
@@ -13,16 +16,27 @@ class Board:
     Creates a hash of the current board returns board hash
     """
     def getHash(self):
-        self.boardHash = str(self.board.reshape(9))
+        self.boardHash = str(self.board.reshape(self.row*self.col))
         return self.boardHash
     
-    
+    def getShrinkHash(self):
+        boardCopy = self.board.copy()
+        while(np.all(boardCopy[0] == 0)):
+            boardCopy = np.delete(boardCopy,(0), axis = 0)
+        while(np.all(boardCopy[-1] == 0)):
+            boardCopy = np.delete(boardCopy,(-1), axis = 0)
+        while(np.all(boardCopy[:, 0] == 0)):
+            boardCopy = np.delete(boardCopy,(0), axis = 1)
+        while(np.all(boardCopy[: ,-1] == 0)):
+            boardCopy = np.delete(boardCopy,(-1), axis = 1)
+        
+        return str(boardCopy.reshape(len(boardCopy)*len(boardCopy[0])))
     
     """
     resets all dates for training
     """
     def reset(self):
-        self.board = np.array([[0, 0, 0],[0, 0, 0],[0, 0, 0]])
+        self.board = np.zeros((self.row,self.col))
         self.boardHash = None
         self.isEnd = False
     """
@@ -38,7 +52,7 @@ class Board:
             return False
 
     """
-    input of the board 3 by 3 numpy array, row number int, row column int
+     row number int, row column int
     checks if placing a move in the given coordinates are legal
     returns true if legal, false if not
     """
@@ -52,27 +66,29 @@ class Board:
         print(self.board)
         
     """
-    input of the row 3 element array, player int
+    Input of any length row and player counter
+    Creates a copy of the row to allow editing
     for each element the element is set to 0 if it isnt the players move, this is to ignore empty coords and the other players moves
-    checks if the list contains 3 of the players move
+    checks if the list contains the amount required to win of the players move
     returns true if check passes, else false
     """
     def checkRow(self,row, player):
-        for index in range(0,3):
+        for index in range(0,len(row)):
             if (row[index] != player):
                 row[index] = 0
-        if(all(row)):
-            return True
+        for x in range((len(row)-self.winNum+1)):
+            if (all(row[x:self.winNum+x])):
+                return True
         else:
             return False
     
     """
-    input of board 3 by 3 numpy array, player int
+    player character
     creates a copy of the board
-    loops over each row to check if win condition has been met
-    checks if diagonal win condition has been met
-    rotates the board by 90 degrees
-    repeats the loop
+    loops over each row to check if win condition has been met 
+    rotates the board by 90 degrees and repeates check
+    Creates a list of all diagonal combinations
+    does a row check on all diagonal combinations
     returns true if win condition has been met
     """
     def checkBoard(self,player):
@@ -82,18 +98,23 @@ class Board:
                 if (self.checkRow(row,player)):
                     self.isEnd = True
                     return True
-            diag = [boardCopy[0][0],boardCopy[1][1],boardCopy[2][2]]
-            if (self.checkRow(diag,player)):
-                self.isEnd = True
-                return True
             boardCopy = np.rot90(boardCopy)
+        diags = [boardCopy[::-1,:].diagonal(i).copy() for i in range(-boardCopy.shape[0]+1,boardCopy.shape[1])]
+        diags.extend(boardCopy.diagonal(i).copy() for i in range(boardCopy.shape[1]-1,-boardCopy.shape[0],-1))
+        
+        for row in diags:
+            if(len(row)>=self.winNum):
+                if (self.checkRow(row,player)):
+                    self.isEnd = True
+                    return True
+        
     """
     Checks and returns remaining possible moves
     """
     def getRemainingMoves(self,board):
         remainingMoves = []
-        for row in range(0,3):
-            for col in range(0,3):
+        for row in range(0,len(board)):
+            for col in range(0,len(board[0])):
                 if(board[row][col] == 0):
                     remainingMoves.append([row,col])
         return remainingMoves
