@@ -40,8 +40,8 @@ class Game:
     """
     def aIVsAI(self, row, col, winNum, rounds = 100):
         for i in range(rounds):
-            #if(i%1 == 0):
-            print("rounds {}".format(i))
+            if(i%1000 == 0):
+                print("rounds {}".format(i))
             boardObj = b(row, col, winNum)
             while (self.beingPlayed):
                 positions = boardObj.getRemainingMoves(boardObj.getBoard())
@@ -122,7 +122,7 @@ class Game:
             for event in pygame.event.get():
                 if (event.type == pygame.QUIT):
                     loop = False
-                if(pygame.mouse.get_pressed()[0]):#left
+                if(pygame.mouse.get_pressed()[0]):
                     if(humanTurn):
                         pos = pygame.mouse.get_pos()
                         p1Action = [int(pos[0]/self.pixelSize),int(pos[1]/self.pixelSize)]
@@ -134,31 +134,37 @@ class Game:
                             if(boardObj.checkBoard(1)):
                                 print(self.p1.getName() + " has won")
                                 boardObj.reset()
-                                break
+                                humanTurn = True
+                                #break
                             elif not(boardObj.getRemainingMoves(boardObj.getBoard())):
                                 print("draw")
                                 boardObj.reset()
-                                break
+                                humanTurn = True
+                                #break
             if(not humanTurn):
-
                 positions = boardObj.getRemainingMoves(boardObj.getBoard())
                 p2Action = self.p2.chooseAction(positions, boardObj.getBoard(), 2)
                 boardObj.move(2,p2Action[0],p2Action[1])
                 boardHash = boardObj.getHash()
                 self.p2.addState(boardHash)
+                humanTurn = not humanTurn
                 if(boardObj.checkBoard(2)):
                     print(self.p2.getName() + " has won")
                     boardObj.reset()
                     #break
-                humanTurn = not humanTurn
-
+                elif not(boardObj.getRemainingMoves(boardObj.getBoard())):
+                    print("draw")
+                    boardObj.reset()
+                    humanTurn = True
+                    #break
+            
             img = pygame.surfarray.make_surface(boardObj.getBoard())
             img = pygame.transform.scale(img, (row * self.pixelSize,col * self.pixelSize))
             #draw to the screen
             self.screen.fill((0,0,0)) 
             self.screen.blit(img,(0,0))
             pygame.display.flip()
-        #pygame.quit()
+        pygame.quit()
 
     """
     Inputs of board rows, board columns, and win number
@@ -232,7 +238,7 @@ def humanFirstGame(row,col,winNum):
     p2 = AI("computer", expRate = 0)
     p2.loadPolicy(row, col, winNum, "p2")
 
-    st = Game(p1,p2)
+    st = Game(p1,p2,row,col)
     if(st.pygame):
         pygame.init()
         st.setupScreen()
@@ -249,5 +255,5 @@ def humanVsHumanGame(row,col,winNum):
     st.humanVsHuman(row,col, winNum)
 
 #trainAI(1000,15,15,5)
-humanFirstGame(3,3,3)
+humanFirstGame(4,4,4)
 #humanVsHumanGame(10,10,5)
