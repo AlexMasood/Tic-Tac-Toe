@@ -114,10 +114,19 @@ class Game:
                     boardObj.reset()
                     break
 
-    def pgHumanvsAI(self, row, col, winNum):
+    def pgHumanvsAI(self, row, col, winNum,humanStart):
         boardObj = b(row, col, winNum)
         loop = True
-        humanTurn = True
+
+        #turn allocation setup
+        humanTurn = humanStart
+        if(humanStart):
+            first = 1
+            second = 2
+        else:
+            first = 2
+            second = 1
+        
         while loop:
             for event in pygame.event.get():
                 if (event.type == pygame.QUIT):
@@ -127,36 +136,37 @@ class Game:
                         pos = pygame.mouse.get_pos()
                         p1Action = [int(pos[0]/self.pixelSize),int(pos[1]/self.pixelSize)]
                         if(p1Action in boardObj.getRemainingMoves(boardObj.getBoard())):
-                            boardObj.move(1,p1Action[0],p1Action[1])
+                            boardObj.move(first,p1Action[0],p1Action[1])
                             boardHash = boardObj.getHash()
                             self.p1.addState(boardHash)
                             humanTurn = not humanTurn
-                            if(boardObj.checkBoard(1)):
+                            
+                            if(boardObj.checkBoard(first)):
                                 print(self.p1.getName() + " has won")
                                 boardObj.reset()
-                                humanTurn = True
-                                #break
+                                humanTurn = humanStart
+
                             elif not(boardObj.getRemainingMoves(boardObj.getBoard())):
                                 print("draw")
                                 boardObj.reset()
-                                humanTurn = True
-                                #break
+                                humanTurn = humanStart
             if(not humanTurn):
                 positions = boardObj.getRemainingMoves(boardObj.getBoard())
-                p2Action = self.p2.chooseAction(positions, boardObj.getBoard(), 2)
-                boardObj.move(2,p2Action[0],p2Action[1])
+                p2Action = self.p2.chooseAction(positions, boardObj.getBoard(), second)
+                boardObj.move(second,p2Action[0],p2Action[1])
                 boardHash = boardObj.getHash()
                 self.p2.addState(boardHash)
                 humanTurn = not humanTurn
-                if(boardObj.checkBoard(2)):
+
+                if(boardObj.checkBoard(second)):
                     print(self.p2.getName() + " has won")
                     boardObj.reset()
-                    #break
+                    humanTurn = humanStart
+
                 elif not(boardObj.getRemainingMoves(boardObj.getBoard())):
                     print("draw")
                     boardObj.reset()
-                    humanTurn = True
-                    #break
+                    humanTurn = humanStart
             
             img = pygame.surfarray.make_surface(boardObj.getBoard())
             img = pygame.transform.scale(img, (row * self.pixelSize,col * self.pixelSize))
@@ -166,6 +176,7 @@ class Game:
             pygame.display.flip()
         pygame.quit()
 
+    
     """
     Inputs of board rows, board columns, and win number
     whilst the game is being played,
@@ -220,20 +231,23 @@ Inputs of board rows, board columns, and win number
 Loads computers AI is first player
 """  
 def computerFirstGame(row,col,winNum):
-    p1 = AI("computer", expRate = 0)
-    p2 = Player("Human")
-    p1.loadPolicy(row, col, winNum, "p1")
+    p1 = Player("Human")
+    p2 = AI("computer", expRate = 0)
+    p2.loadPolicy(row, col, winNum, "p1")
 
-    st = Game(p1,p2)
-    st.humanVsAI(row,col, winNum)
+    st = Game(p1,p2,row,col)
+    if(st.pygame):
+        pygame.init()
+        st.setupScreen()
+        st.pgHumanvsAI(row,col, winNum,False)
+    else:
+        st.humanVsAI(row,col, winNum) 
 
 """
 Inputs of board rows, board columns, and win number
 Loads computers AI second player
 """
 def humanFirstGame(row,col,winNum):
-    
-
     p1 = Player("Human")
     p2 = AI("computer", expRate = 0)
     p2.loadPolicy(row, col, winNum, "p2")
@@ -242,7 +256,7 @@ def humanFirstGame(row,col,winNum):
     if(st.pygame):
         pygame.init()
         st.setupScreen()
-        st.pgHumanvsAI(row,col, winNum)
+        st.pgHumanvsAI(row,col, winNum,True)
     else:
         st.humanVsAI(row,col, winNum) 
 """
@@ -255,5 +269,6 @@ def humanVsHumanGame(row,col,winNum):
     st.humanVsHuman(row,col, winNum)
 
 #trainAI(1000,15,15,5)
-humanFirstGame(4,4,4)
+#humanFirstGame(3,3,3)
+computerFirstGame(3,3,3)
 #humanVsHumanGame(10,10,5)
