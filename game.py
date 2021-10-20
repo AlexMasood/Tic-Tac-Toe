@@ -1,4 +1,5 @@
 from numpy.core.arrayprint import format_float_scientific
+from pygame.constants import KEYDOWN
 from board import Board as b
 from ai import AI
 from player import Player
@@ -115,9 +116,11 @@ class Game:
                     break
 
     def pgHumanvsAI(self, row, col, winNum,humanStart):
+        font = pygame.font.SysFont(None, 24)
+        text = font.render('', True, (255,255,255))
         boardObj = b(row, col, winNum)
         loop = True
-
+        state = 0 # 0 = playing,1 = drawn, 2 = winner (either ai or player)
         #turn allocation setup
         humanTurn = humanStart
         if(humanStart):
@@ -131,6 +134,12 @@ class Game:
             for event in pygame.event.get():
                 if (event.type == pygame.QUIT):
                     loop = False
+                if (event.type == KEYDOWN):
+                    if(pygame.key.get_pressed()[pygame.K_SPACE]):
+                        if(state>0):
+                            state = 0
+                            boardObj.reset()
+                            humanTurn = humanStart
                 if(pygame.mouse.get_pressed()[0]):
                     if(humanTurn):
                         pos = pygame.mouse.get_pos()
@@ -142,14 +151,12 @@ class Game:
                             humanTurn = not humanTurn
                             
                             if(boardObj.checkBoard(first)):
-                                print(self.p1.getName() + " has won")
-                                boardObj.reset()
-                                humanTurn = humanStart
+                                state = 2
+                                text = font.render(self.p1.getName() + " has won", True, (255,255,255))
 
                             elif not(boardObj.getRemainingMoves(boardObj.getBoard())):
-                                print("draw")
-                                boardObj.reset()
-                                humanTurn = humanStart
+                                state = 1
+                                text = font.render('draw', True, (255,255,255))
             if(not humanTurn):
                 positions = boardObj.getRemainingMoves(boardObj.getBoard())
                 p2Action = self.p2.chooseAction(positions, boardObj.getBoard(), second)
@@ -159,20 +166,20 @@ class Game:
                 humanTurn = not humanTurn
 
                 if(boardObj.checkBoard(second)):
-                    print(self.p2.getName() + " has won")
-                    boardObj.reset()
-                    humanTurn = humanStart
+                    state = 2
+                    text = font.render(self.p2.getName() + " has won", True, (255,255,255))
 
                 elif not(boardObj.getRemainingMoves(boardObj.getBoard())):
-                    print("draw")
-                    boardObj.reset()
-                    humanTurn = humanStart
-            
+                    state = 1
+                    text = font.render('draw', True, (255,255,255))           
+                
             img = pygame.surfarray.make_surface(boardObj.getBoard())
             img = pygame.transform.scale(img, (row * self.pixelSize,col * self.pixelSize))
             #draw to the screen
             self.screen.fill((0,0,0)) 
             self.screen.blit(img,(0,0))
+            if(state>0):
+                self.screen.blit(text,(0,0))
             pygame.display.flip()
         pygame.quit()
 
