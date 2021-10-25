@@ -1,7 +1,8 @@
 import numpy as np
+import time
 class Board:
     def __init__(self,row = 3,col = 3,winNum = 3):
-        self.board = np.zeros((row,col))
+        self.board = np.zeros((row,col),dtype=int)
         self.col = col
         self.row = row
         self.winNum = winNum
@@ -16,7 +17,7 @@ class Board:
     Creates a hash of the current board returns board hash
     """
     def getHash(self):
-        self.boardHash = str(self.board.reshape(self.row*self.col))
+        self.boardHash = str(self.board.ravel())
         return self.boardHash
     
     def getShrinkHash(self):
@@ -30,13 +31,13 @@ class Board:
         while(np.all(boardCopy[: ,-1] == 0)):
             boardCopy = np.delete(boardCopy,(-1), axis = 1)
         
-        return str(boardCopy.reshape(len(boardCopy)*len(boardCopy[0])))
+        return str(boardCopy.ravel())
     
     """
     resets all dates for training
     """
     def reset(self):
-        self.board = np.zeros((self.row,self.col))
+        self.board = np.zeros((self.row,self.col),dtype=int)
         self.boardHash = None
         self.isEnd = False
     """
