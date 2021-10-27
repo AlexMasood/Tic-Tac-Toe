@@ -65,16 +65,23 @@ class AI:
     def reset(self):
         self.states = []
 
-    def savePolicy(self):
-        fw = open('policy_'+str(self.name),'wb')
+    """
+    Returns a string for the filename consisting of policy followed by row, col,win number, and position of AI
+    """
+    def fileNaming(self, row, col,winNum,playerPos):
+        return "policy_"+str(row)+"_by_"+str(col)+"_"+str(winNum)+"_"+str(playerPos)
+
+
+    def savePolicy(self, row, col, winNum):
+        fw = open(self.fileNaming(row, col, winNum, self.name),'wb')
         pickle.dump(self.statesValues, fw)
         fw.close()
     
-    def loadPolicy(self,file):
-        fr = open(file,'rb')
+    def loadPolicy(self,row, col, winNum, user):
+        fr = open(self.fileNaming(row, col, winNum, user),'rb')
         self.statesValues = pickle.load(fr)
         fr.close()
-
+    
     """
     Input of board object And player
     retrieves possible moves selects a random move plays move

@@ -1,5 +1,4 @@
 import numpy as np
-import time
 class Board:
     def __init__(self,row = 3,col = 3,winNum = 3):
         self.board = np.zeros((row,col),dtype=int)
@@ -8,6 +7,7 @@ class Board:
         self.winNum = winNum
         self.boardHash = None
         self.isEnd = False
+        self.solutionArray = np.array([448,273,292,146,84,73,56,7])
         
 
     def getBoard(self):
@@ -125,3 +125,20 @@ class Board:
     """
     def openSpaces(self):
         return np.count_nonzero(self.board == 0)
+    
+    def binarySolver(self,board,player):
+        tempBoard = board.copy()
+        for row in tempBoard:
+            for index in range(0,len(row)):
+
+                if (row[index] != player):
+                    row[index] = 0
+                if (row[index] == 2):
+                    row[index] = 1
+        singleArrayBoard = tempBoard.ravel()
+        boardInt = int("0b"+''.join(map(str, singleArrayBoard)),2)
+        for ans in self.solutionArray:
+            if(boardInt&ans == ans):
+                return True
+        return False
+

@@ -4,6 +4,7 @@ from board import Board as b
 from ai import AI
 from player import Player
 import pygame
+import time
 """
 Implementation of reinforcement AI based on code created by MJeremy2017
 https://github.com/MJeremy2017/reinforcement-learning-implementation/blob/master/TicTacToe/tic-tac-toe.ipynb
@@ -49,11 +50,9 @@ class Game:
                 p1Action = self.p1.chooseAction(positions, boardObj.getBoard(), 1)
                 boardObj.move(1,p1Action[0],p1Action[1])
                 boardHash = boardObj.getHash()
-                boardShrinkHash = boardObj.getShrinkHash()
                 self.p1.addState(boardHash)
-                self.p1.addState(boardShrinkHash)
 
-                if((boardObj.checkBoard(1)) or not(boardObj.getRemainingMoves(boardObj.getBoard()))):
+                if((boardObj.binarySolver(boardObj.getBoard(),1)) or not(boardObj.getRemainingMoves(boardObj.getBoard()))):
                     self.giveReward(boardObj)
                     self.p1.reset()
                     self.p2.reset()
@@ -64,11 +63,9 @@ class Game:
                     p2Action = self.p2.chooseAction(positions, boardObj.getBoard(), 2)
                     boardObj.move(2,p2Action[0],p2Action[1])
                     boardHash = boardObj.getHash()
-                    boardShrinkHash = boardObj.getShrinkHash()
                     self.p2.addState(boardHash)
-                    self.p2.addState(boardShrinkHash)
 
-                    if((boardObj.checkBoard(2)) or not(boardObj.getRemainingMoves(boardObj.getBoard()))):
+                    if((boardObj.binarySolver(boardObj.getBoard(),2)) or not(boardObj.getRemainingMoves(boardObj.getBoard()))):
                         self.giveReward(boardObj)
                         self.p1.reset()
                         self.p2.reset()
@@ -275,7 +272,12 @@ def humanVsHumanGame(row,col,winNum):
     st = Game(p1,p2)
     st.humanVsHuman(row,col, winNum)
 
-#trainAI(1000,15,15,5)
+#trainAI(1000,3,3,3)
 #humanFirstGame(3,3,3)
-computerFirstGame(3,3,3)
+#computerFirstGame(3,3,3)
 #humanVsHumanGame(10,10,5)
+
+start = time.time()
+trainAI(1000000,3,3,3)
+end = time.time()
+print(end - start)
