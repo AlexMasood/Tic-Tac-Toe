@@ -154,6 +154,7 @@ class Game:
                             elif not(boardObj.getRemainingMoves(boardObj.getBoard())):
                                 state = 1
                                 text = font.render('draw', True, (255,255,255))
+                                humanTurn = not humanTurn
             if(not humanTurn):
                 positions = boardObj.getRemainingMoves(boardObj.getBoard())
                 p2Action = self.p2.chooseAction(positions, boardObj.getBoard(), second)
@@ -273,11 +274,11 @@ def humanVsHumanGame(row,col,winNum):
     st.humanVsHuman(row,col, winNum)
 
 #trainAI(1000,3,3,3)
-#humanFirstGame(3,3,3)
+humanFirstGame(3,3,3)
 #computerFirstGame(3,3,3)
 #humanVsHumanGame(10,10,5)
 
-start = time.time()
-trainAI(1000000,3,3,3)
-end = time.time()
-print(end - start)
+#start = time.time()
+#trainAI(1000000,3,3,3)
+#end = time.time()
+#print(end - start)
