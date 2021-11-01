@@ -7,7 +7,7 @@ class Board:
         self.winNum = winNum
         self.boardHash = None
         self.isEnd = False
-        self.solutionArray = np.array([448,273,292,146,84,73,56,7])
+        self.solutionArray = {448,273,292,146,84,73,56,7}
         
 
     def getBoard(self):
