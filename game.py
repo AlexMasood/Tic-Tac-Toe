@@ -23,10 +23,10 @@ class Game:
     Feed both AI based on winner or draw
     """
     def giveReward(self,boardObj):
-        if(boardObj.checkBoard(1)):
+        if(boardObj.binarySolver(boardObj.getBoard(),1)):
             self.p1.feedReward(1)
             self.p2.feedReward(0)
-        elif(boardObj.checkBoard(2)):
+        elif(boardObj.binarySolver(boardObj.getBoard(),2)):
             self.p1.feedReward(0)
             self.p2.feedReward(1)
         else:
@@ -42,30 +42,30 @@ class Game:
     """
     def aIVsAI(self, row, col, winNum, rounds = 100):
         for i in range(rounds):
-            if(i%1000 == 0):
-                print("rounds {}".format(i))
+            #if(i%1000 == 0):
+            #    print("rounds {}".format(i))
             boardObj = b(row, col, winNum)
             while (self.beingPlayed):
-                positions = boardObj.getRemainingMoves(boardObj.getBoard())
+                positions = boardObj.getRemainingMoves()
                 p1Action = self.p1.chooseAction(positions, boardObj.getBoard(), 1)
                 boardObj.move(1,p1Action[0],p1Action[1])
                 boardHash = boardObj.getHash()
                 self.p1.addState(boardHash)
 
-                if((boardObj.binarySolver(boardObj.getBoard(),1)) or not(boardObj.getRemainingMoves(boardObj.getBoard()))):
+                if((boardObj.binarySolver(boardObj.getBoard(),1)) or not(boardObj.getRemainingMoves())):
                     self.giveReward(boardObj)
                     self.p1.reset()
                     self.p2.reset()
                     boardObj.reset()
                     break
                 else:
-                    positions = boardObj.getRemainingMoves(boardObj.getBoard())
+                    positions = boardObj.getRemainingMoves()
                     p2Action = self.p2.chooseAction(positions, boardObj.getBoard(), 2)
                     boardObj.move(2,p2Action[0],p2Action[1])
                     boardHash = boardObj.getHash()
                     self.p2.addState(boardHash)
 
-                    if((boardObj.binarySolver(boardObj.getBoard(),2)) or not(boardObj.getRemainingMoves(boardObj.getBoard()))):
+                    if((boardObj.binarySolver(boardObj.getBoard(),2)) or not(boardObj.getRemainingMoves())):
                         self.giveReward(boardObj)
                         self.p1.reset()
                         self.p2.reset()
@@ -83,7 +83,7 @@ class Game:
         boardObj.printBoard()
         print("######")
         while (self.beingPlayed):
-            positions = boardObj.getRemainingMoves(boardObj.getBoard())
+            positions = boardObj.getRemainingMoves()
             p1Action = self.p1.chooseAction(positions, boardObj.getBoard(), 1)
             boardObj.move(1,p1Action[0],p1Action[1])
             boardHash = boardObj.getHash()
@@ -95,12 +95,12 @@ class Game:
                 print(self.p1.getName() + " has won")
                 boardObj.reset()
                 break
-            elif not(boardObj.getRemainingMoves(boardObj.getBoard())):
+            elif not(boardObj.getRemainingMoves()):
                 print("draw")
                 boardObj.reset()
                 break
             else:
-                positions = boardObj.getRemainingMoves(boardObj.getBoard())
+                positions = boardObj.getRemainingMoves()
                 p2Action = self.p2.chooseAction(positions, boardObj.getBoard(), 2)
                 boardObj.move(2,p2Action[0],p2Action[1])
                 boardHash = boardObj.getHash()
@@ -140,34 +140,34 @@ class Game:
                 if(pygame.mouse.get_pressed()[0]):
                     if(humanTurn):
                         pos = pygame.mouse.get_pos()
-                        p1Action = [int(pos[0]/self.pixelSize),int(pos[1]/self.pixelSize)]
-                        if(p1Action in boardObj.getRemainingMoves(boardObj.getBoard())):
+                        p1Action = (int(pos[0]/self.pixelSize),int(pos[1]/self.pixelSize))
+                        if(p1Action in boardObj.getRemainingMoves()):
                             boardObj.move(first,p1Action[0],p1Action[1])
                             boardHash = boardObj.getHash()
                             self.p1.addState(boardHash)
                             humanTurn = not humanTurn
                             
-                            if(boardObj.checkBoard(first)):
+                            if(boardObj.binarySolver(boardObj.getBoard(),first)):
                                 state = 2
                                 text = font.render(self.p1.getName() + " has won", True, (255,255,255))
 
-                            elif not(boardObj.getRemainingMoves(boardObj.getBoard())):
+                            elif not(boardObj.getRemainingMoves()):
                                 state = 1
                                 text = font.render('draw', True, (255,255,255))
                                 humanTurn = not humanTurn
             if(not humanTurn):
-                positions = boardObj.getRemainingMoves(boardObj.getBoard())
+                positions = boardObj.getRemainingMoves()
                 p2Action = self.p2.chooseAction(positions, boardObj.getBoard(), second)
                 boardObj.move(second,p2Action[0],p2Action[1])
                 boardHash = boardObj.getHash()
                 self.p2.addState(boardHash)
                 humanTurn = not humanTurn
 
-                if(boardObj.checkBoard(second)):
+                if(boardObj.binarySolver(boardObj.getBoard(),second)):
                     state = 2
                     text = font.render(self.p2.getName() + " has won", True, (255,255,255))
 
-                elif not(boardObj.getRemainingMoves(boardObj.getBoard())):
+                elif not(boardObj.getRemainingMoves()):
                     state = 1
                     text = font.render('draw', True, (255,255,255))           
                 
@@ -195,7 +195,7 @@ class Game:
         boardObj = b(rowLen, colLen, winNum)
         boardObj.printBoard()
         while (self.beingPlayed):
-            positions = boardObj.getRemainingMoves(boardObj.getBoard())
+            positions = boardObj.getRemainingMoves()
             p1Action = self.p1.chooseAction(positions, boardObj.getBoard(), 1)
             boardObj.move(1,p1Action[0],p1Action[1])
             boardObj.printBoard()
@@ -203,11 +203,11 @@ class Game:
                 print(self.p1.getName() + " has won")
                 self.beingPlayed = False
             else:
-                if(not boardObj.getRemainingMoves(boardObj.getBoard())):
+                if(not boardObj.getRemainingMoves()):
                     print("Draw")
                     self.beingPlayed = False
                 else:
-                    positions = boardObj.getRemainingMoves(boardObj.getBoard())
+                    positions = boardObj.getRemainingMoves()
                     p2Action = self.p2.chooseAction(positions, boardObj.getBoard(), 2)
                     boardObj.move(2,p2Action[0],p2Action[1])
                     boardObj.printBoard()
@@ -274,11 +274,11 @@ def humanVsHumanGame(row,col,winNum):
     st.humanVsHuman(row,col, winNum)
 
 #trainAI(1000,3,3,3)
-humanFirstGame(3,3,3)
+#humanFirstGame(3,3,3)
 #computerFirstGame(3,3,3)
 #humanVsHumanGame(10,10,5)
 
-#start = time.time()
-#trainAI(1000000,3,3,3)
-#end = time.time()
-#print(end - start)
+start = time.time()
+#trainAI(100000,3,3,3)
+end = time.time()
+print(end - start)

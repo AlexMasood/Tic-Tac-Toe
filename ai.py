@@ -30,8 +30,7 @@ class AI:
     """
     def chooseAction(self, positions, currentBoard, symbol):
         if (np.random.uniform(0,1) <= self.expRate):
-            idx = np.random.choice(len(positions))
-            action = positions[idx]
+            action = random.choice(tuple(positions))
         else:
             valueMax = -999
             for p in positions:
