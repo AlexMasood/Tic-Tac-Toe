@@ -42,9 +42,18 @@ class Game:
     """
     def aIVsAI(self, row, col, winNum, rounds = 100):
         boardObj = b(row, col, winNum)
+        p1DictSize = len(self.p1.statesValues)
+        p2DictSize = len(self.p2.statesValues)
+
         for i in range(rounds):
-            #if(i%1000 == 0):
-            #    print("rounds {}".format(i))
+            if(i%100000 == 0):
+                print("rounds {}".format(i))
+                if(len(self.p1.statesValues)>p1DictSize):
+                    print("p1 dictionary size: "+str(len(self.p1.statesValues)))
+                    p1DictSize = len(self.p1.statesValues)
+                if(len(self.p2.statesValues)>p2DictSize):
+                    print("p2 dictionary size: "+str(len(self.p2.statesValues)))
+                    p2DictSize = len(self.p2.statesValues)
             boardTuple = [0,0]
             while (self.beingPlayed):
                 positions = boardObj.getRemainingMoves()
@@ -117,6 +126,7 @@ class Game:
         font = pygame.font.SysFont(None, 24)
         text = font.render('', True, (255,255,255))
         boardObj = b(row, col, winNum)
+        boardTuple = [0,0]
         loop = True
         state = 0 # 0 = playing,1 = drawn, 2 = winner (either ai or player)
         #turn allocation setup
@@ -139,38 +149,49 @@ class Game:
                             boardObj.reset()
                             humanTurn = humanStart
                 if(pygame.mouse.get_pressed()[0]):
-                    if(humanTurn):
+                    if(state>0):
+                        state = 0
+                        boardObj.reset()
+                        humanTurn = humanStart
+                        time.sleep(0.5)
+                    elif(humanTurn):
                         pos = pygame.mouse.get_pos()
                         p1Action = (int(pos[0]/self.pixelSize),int(pos[1]/self.pixelSize))
                         if(p1Action in boardObj.getRemainingMoves()):
-                            boardObj.move(first,p1Action[0],p1Action[1])
-                            boardHash = boardObj.getHash()
+                            boardTuple[first-1] = boardObj.move(first,p1Action,boardTuple[first-1])
+                            boardHash = boardObj.getHash(boardTuple)
                             self.p1.addState(boardHash)
                             humanTurn = not humanTurn
-                            
+                            print("f")
                             if(boardObj.binarySolver(boardObj.getBoard(),first)):
                                 state = 2
                                 text = font.render(self.p1.getName() + " has won", True, (255,255,255))
+                                humanTurn = not humanTurn
+                                print("1")
 
                             elif not(boardObj.getRemainingMoves()):
                                 state = 1
                                 text = font.render('draw', True, (255,255,255))
                                 humanTurn = not humanTurn
+                                print("2")
             if(not humanTurn):
                 positions = boardObj.getRemainingMoves()
-                p2Action = self.p2.chooseAction(positions, boardObj.getBoard(), second)
-                boardObj.move(second,p2Action[0],p2Action[1])
-                boardHash = boardObj.getHash()
+                p2Action = self.p2.chooseAction(positions, boardObj, second,boardTuple)
+                boardTuple[second-1] = boardObj.move(second,p2Action,boardTuple[second-1])
+                boardHash = boardObj.getHash(boardTuple)
                 self.p2.addState(boardHash)
                 humanTurn = not humanTurn
+                print("e")
 
                 if(boardObj.binarySolver(boardObj.getBoard(),second)):
                     state = 2
                     text = font.render(self.p2.getName() + " has won", True, (255,255,255))
+                    print("3")
 
                 elif not(boardObj.getRemainingMoves()):
                     state = 1
-                    text = font.render('draw', True, (255,255,255))           
+                    text = font.render('draw', True, (255,255,255))
+                    print("4")
                 
             img = pygame.surfarray.make_surface(boardObj.getBoard())
             img = pygame.transform.scale(img, (row * self.pixelSize,col * self.pixelSize))
@@ -284,12 +305,11 @@ def humanVsHumanGame(row,col,winNum):
     st = Game(p1,p2)
     st.humanVsHuman(row,col, winNum)
 
-#trainAI(1000,3,3,3)
-#humanFirstGame(3,3,3)
-#computerFirstGame(3,3,3)
-#humanVsHumanGame(10,10,5)
+
 
 start = time.time()
-trainAI(10000,3,3,3,continueAITraining=False, savePolicy=False)
+#trainAI(5000000,3,3,3,continueAITraining=True, savePolicy=True)
+humanFirstGame(3,3,3)
+#computerFirstGame(3,3,3)
 end = time.time()
 print(end - start)
