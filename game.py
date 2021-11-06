@@ -4,6 +4,7 @@ from board import Board as b
 from ai import AI
 from player import Player
 import pygame
+import numpy as np
 import time
 """
 Implementation of reinforcement AI based on code created by MJeremy2017
@@ -156,24 +157,21 @@ class Game:
                         time.sleep(0.5)
                     elif(humanTurn):
                         pos = pygame.mouse.get_pos()
-                        p1Action = (int(pos[0]/self.pixelSize),int(pos[1]/self.pixelSize))
+                        p1Action = (int(pos[1]/self.pixelSize),int(pos[0]/self.pixelSize))
                         if(p1Action in boardObj.getRemainingMoves()):
                             boardTuple[first-1] = boardObj.move(first,p1Action,boardTuple[first-1])
                             boardHash = boardObj.getHash(boardTuple)
                             self.p1.addState(boardHash)
                             humanTurn = not humanTurn
-                            print("f")
                             if(boardObj.binarySolver(boardObj.getBoard(),first)):
                                 state = 2
                                 text = font.render(self.p1.getName() + " has won", True, (255,255,255))
                                 humanTurn = not humanTurn
-                                print("1")
 
                             elif not(boardObj.getRemainingMoves()):
                                 state = 1
                                 text = font.render('draw', True, (255,255,255))
                                 humanTurn = not humanTurn
-                                print("2")
             if(not humanTurn):
                 positions = boardObj.getRemainingMoves()
                 p2Action = self.p2.chooseAction(positions, boardObj, second,boardTuple)
@@ -181,19 +179,16 @@ class Game:
                 boardHash = boardObj.getHash(boardTuple)
                 self.p2.addState(boardHash)
                 humanTurn = not humanTurn
-                print("e")
 
                 if(boardObj.binarySolver(boardObj.getBoard(),second)):
                     state = 2
                     text = font.render(self.p2.getName() + " has won", True, (255,255,255))
-                    print("3")
 
                 elif not(boardObj.getRemainingMoves()):
                     state = 1
                     text = font.render('draw', True, (255,255,255))
-                    print("4")
                 
-            img = pygame.surfarray.make_surface(boardObj.getBoard())
+            img = pygame.surfarray.make_surface(np.flip(np.rot90(boardObj.getBoard(),3),1))
             img = pygame.transform.scale(img, (row * self.pixelSize,col * self.pixelSize))
             #draw to the screen
             self.screen.fill((0,0,0)) 
