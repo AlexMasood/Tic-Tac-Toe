@@ -15,9 +15,6 @@ class AI:
         self.decayGamma = 0.9
         self.statesValues = {}
     
-    def getHash(self,board):
-        boardHash = str(board.reshape(9))
-        return boardHash
     
     def getName(self):
         return self.name
@@ -28,19 +25,25 @@ class AI:
     each next potential legal move has its board created, hashed, and checked if in dictionary,If in dictionary value is set to value stored in the dictionary
     largest value is selected as its action 
     """
-    def chooseAction(self, positions, currentBoard, symbol):
+    def chooseAction(self, positions, currentBoardObj, symbol,boardTuple):
         if (np.random.uniform(0,1) <= self.expRate):
             action = random.choice(tuple(positions))
         else:
+            #currentBoard = currentBoardObj.getBoard()
+            #posCopy = positions.copy()
             valueMax = -999
             for p in positions:
-                nextBoard = currentBoard.copy()
-                nextBoard[p[0],p[1]] = symbol
-                nextBoardHash = self.getHash(nextBoard)
-                if (self.statesValues.get(nextBoardHash) is None):
+                #nextBoard = currentBoard.copy()
+                boardTupleCopy = boardTuple.copy()
+
+                boardTupleCopy[symbol-1] = currentBoardObj.tempMove(symbol,p,boardTupleCopy[symbol-1])
+                #move(self,player,rowNum,colNum,playerBoardNum):
+                #nextBoardHash = self.getHash(nextBoard)
+                nextBoardTuple = tuple(boardTupleCopy)
+                if (self.statesValues.get(nextBoardTuple) is None):
                     value = 0
                 else:
-                    value = self.statesValues.get(nextBoardHash)
+                    value = self.statesValues.get(nextBoardTuple)
                 if(value >= valueMax):
                     valueMax = value
                     action = p
@@ -68,7 +71,7 @@ class AI:
     Returns a string for the filename consisting of policy followed by row, col,win number, and position of AI
     """
     def fileNaming(self, row, col,winNum,playerPos):
-        return "policy_"+str(row)+"_by_"+str(col)+"_"+str(winNum)+"_"+str(playerPos)
+        return "policy_"+str(row)+"_by_"+str(col)+"_"+str(winNum)+"_"+str(playerPos)+"_test"
 
 
     def savePolicy(self, row, col, winNum):

@@ -1,4 +1,5 @@
 import numpy as np
+import math
 import time
 class Board:
     def __init__(self,row = 3,col = 3,winNum = 3):
@@ -8,21 +9,27 @@ class Board:
         self.winNum = winNum
         self.boardHash = None
         self.isEnd = False
+        self.singleMoveDict = {}
         self.solutionSet = {448,273,292,146,84,73,56,7}
         self.remainingMoves = {(0, 1), (1, 2), (0, 0), (2, 1), (2, 0), (1, 1), (2, 2), (1, 0), (0, 2)}
-        
+        self.populateSingleMoveDict()
 
     def getBoard(self):
         return self.board
     
     def printBoard(self):
         print(self.board)
+    
+    def populateSingleMoveDict(self):
+        for row in range(0,self.row):
+            for col in range(0,self.col):
+                self.singleMoveDict[(row,col)] = int(math.pow(2,((3*(2-row))+(2 - col)))) 
 
     """
     Creates a hash of the current board returns board hash
     """
-    def getHash(self):
-        self.boardHash = str(self.board.ravel())
+    def getHash(self,boardTuple):
+        self.boardHash = tuple(boardTuple)
         return self.boardHash
     
     """
@@ -39,9 +46,18 @@ class Board:
     removes the move from remaining moves
     no check required as legality is assumed true
     """
-    def move(self,player,rowNum,colNum):
+    def move(self,player,posTuple,playerBoardNum):
+        rowNum = posTuple[0]
+        colNum = posTuple[1]
         self.board[rowNum][colNum] = player
         self.getRemainingMoves().remove((rowNum,colNum))
+        return (playerBoardNum|self.singleMoveDict.get((rowNum,colNum)))
+    
+    def tempMove(self,player,posTuple,playerBoardNum):
+        rowNum = posTuple[0]
+        colNum = posTuple[1]
+        self.board[rowNum][colNum] = player
+        return (playerBoardNum|self.singleMoveDict.get((rowNum,colNum)))
 
     """
     row number int, row column int
@@ -51,8 +67,7 @@ class Board:
     def checkMove(self,rowNum,colNum):
         if((rowNum,colNum) in self.getRemainingMoves()):
             return True
-        else:
-            return False
+        return False
     
     """
     Checks and returns remaining possible moves
@@ -83,3 +98,20 @@ class Board:
             if(boardInt&ans == ans):
                 return True
         return False
+    
+    def binaryCheck(self,boardInt):
+        for ans in self.solutionSet:
+            if(boardInt&ans == ans):
+                return True
+        return False
+
+# s = set()
+
+# x = 0
+# start = time.time()
+# while x<100000000:
+#     if(len(s)==0):
+#         pass
+#     x+=1
+# end = time.time()
+# print(end - start)

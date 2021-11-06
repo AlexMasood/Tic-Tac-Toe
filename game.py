@@ -41,18 +41,19 @@ class Game:
 
     """
     def aIVsAI(self, row, col, winNum, rounds = 100):
+        boardObj = b(row, col, winNum)
         for i in range(rounds):
             #if(i%1000 == 0):
             #    print("rounds {}".format(i))
-            boardObj = b(row, col, winNum)
+            boardTuple = [0,0]
             while (self.beingPlayed):
                 positions = boardObj.getRemainingMoves()
-                p1Action = self.p1.chooseAction(positions, boardObj.getBoard(), 1)
-                boardObj.move(1,p1Action[0],p1Action[1])
-                boardHash = boardObj.getHash()
+                p1Action = self.p1.chooseAction(positions, boardObj, 1,boardTuple)
+                boardTuple[0] = boardObj.move(1,p1Action,boardTuple[0])
+                boardHash = boardObj.getHash(boardTuple)
                 self.p1.addState(boardHash)
 
-                if((boardObj.binarySolver(boardObj.getBoard(),1)) or not(boardObj.getRemainingMoves())):
+                if((boardObj.binaryCheck(boardTuple[0])) or not(boardObj.getRemainingMoves())):
                     self.giveReward(boardObj)
                     self.p1.reset()
                     self.p2.reset()
@@ -60,12 +61,12 @@ class Game:
                     break
                 else:
                     positions = boardObj.getRemainingMoves()
-                    p2Action = self.p2.chooseAction(positions, boardObj.getBoard(), 2)
-                    boardObj.move(2,p2Action[0],p2Action[1])
-                    boardHash = boardObj.getHash()
+                    p2Action = self.p2.chooseAction(positions, boardObj, 2,boardTuple)
+                    boardTuple[1] = boardObj.move(2,p2Action,boardTuple[1])
+                    boardHash = boardObj.getHash(boardTuple)
                     self.p2.addState(boardHash)
 
-                    if((boardObj.binarySolver(boardObj.getBoard(),2)) or not(boardObj.getRemainingMoves())):
+                    if((boardObj.binaryCheck(boardTuple[1])) or not(boardObj.getRemainingMoves())):
                         self.giveReward(boardObj)
                         self.p1.reset()
                         self.p2.reset()
@@ -222,14 +223,24 @@ class Game:
 Inputs of repeated training, board rows, board columns, and win number
 Sets up, trains, and saves the AI
 """
-def trainAI(repitions, row,col,winNum):
+def trainAI(repitions, row,col,winNum, continueAITraining = False, savePolicy = True):
     p1 = AI("p1")
     p2 = AI("p2")
+    if(continueAITraining):
+        print("loaded in previous AI data")
+        p1.loadPolicy(row, col, winNum, "p1")
+        p2.loadPolicy(row, col, winNum, "p2")
+    else:
+        print("training new data")
     st = Game(p1, p2)
     print("training...")
     st.aIVsAI(row,col, winNum, repitions)
-    p1.savePolicy(row,col,winNum)
-    p2.savePolicy(row,col,winNum)
+    if(savePolicy):
+        p1.savePolicy(row,col,winNum)
+        p2.savePolicy(row,col,winNum)
+        print("saved game")
+    else:
+        print("didnt save")
 
 """
 Inputs of board rows, board columns, and win number
@@ -279,6 +290,6 @@ def humanVsHumanGame(row,col,winNum):
 #humanVsHumanGame(10,10,5)
 
 start = time.time()
-#trainAI(100000,3,3,3)
+trainAI(10000,3,3,3,continueAITraining=False, savePolicy=False)
 end = time.time()
 print(end - start)
