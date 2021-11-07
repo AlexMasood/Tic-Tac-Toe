@@ -48,6 +48,7 @@ class Board:
     places move on the board
     removes the move from remaining moves
     no check required as legality is assumed true
+    returns the value of the players board with the cordinates added
     """
     def move(self,player,posTuple,playerBoardNum):
         rowNum = posTuple[0]
@@ -57,13 +58,10 @@ class Board:
         return (playerBoardNum|self.singleMoveDict.get((rowNum,colNum)))
     """
     input of player int, row number int, column number int, players board represented as a integer
-    returns a integer of the players board with the added given move coordinates
-    
+    returns the value of the players board with the cordinates added
     """
     def tempMove(self,player,posTuple,playerBoardNum):
-        rowNum = posTuple[0]
-        colNum = posTuple[1]
-        return (playerBoardNum|self.singleMoveDict.get((rowNum,colNum)))
+        return (playerBoardNum|self.singleMoveDict.get((posTuple[0],posTuple[1])))
 
     """
     row number int, row column int
