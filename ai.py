@@ -31,9 +31,10 @@ class AI:
         else:
             valueMax = -999
             for p in positions:
-                boardTupleCopy = boardTuple.copy()
+                boardTupleCopy = [*boardTuple]
                 boardTupleCopy[symbol-1] = currentBoardObj.tempMove(symbol,p,boardTupleCopy[symbol-1])
                 nextBoardTuple = tuple(boardTupleCopy)
+                
                 if (self.statesValues.get(nextBoardTuple) is None):
                     value = 0
                 else:
@@ -67,7 +68,6 @@ class AI:
     def fileNaming(self, row, col,winNum,playerPos):
         return "policy_"+str(row)+"_by_"+str(col)+"_"+str(winNum)+"_"+str(playerPos)
 
-
     def savePolicy(self, row, col, winNum):
         fw = open(self.fileNaming(row, col, winNum, self.name),'wb')
         pickle.dump(self.statesValues, fw)
@@ -89,4 +89,4 @@ class AI:
         moveCoord = random.choice(moveList)
         board.move(player,moveCoord[0],moveCoord[1])
         board.printBoard()
-        
+

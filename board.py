@@ -20,6 +20,9 @@ class Board:
     def printBoard(self):
         print(self.board)
     
+    """
+    adds all potential moves and their respectibve board integer value to a dictionary
+    """
     def populateSingleMoveDict(self):
         for row in range(0,self.row):
             for col in range(0,self.col):
@@ -41,7 +44,7 @@ class Board:
         self.boardHash = None
         self.isEnd = False
     """
-    input of the board 3 by 3 numpy array, player int, row number int, column number int
+    input of player int, row number int, column number int, players board represented as a integer
     places move on the board
     removes the move from remaining moves
     no check required as legality is assumed true
@@ -52,7 +55,11 @@ class Board:
         self.board[rowNum][colNum] = player
         self.getRemainingMoves().remove((rowNum,colNum))
         return (playerBoardNum|self.singleMoveDict.get((rowNum,colNum)))
+    """
+    input of player int, row number int, column number int, players board represented as a integer
+    returns a integer of the players board with the added given move coordinates
     
+    """
     def tempMove(self,player,posTuple,playerBoardNum):
         rowNum = posTuple[0]
         colNum = posTuple[1]
@@ -97,7 +104,12 @@ class Board:
             if(boardInt&ans == ans):
                 return True
         return False
-    
+
+    """
+    input player board integer
+    does a binary and operation on the binary number and all of the solution numbers
+    returns true if the and operation returns the solution number
+    """
     def binaryCheck(self,boardInt):
         for ans in self.solutionSet:
             if(boardInt&ans == ans):

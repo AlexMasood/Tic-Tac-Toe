@@ -85,7 +85,6 @@ class Game:
     
     """
     Inputs of board rows, board columns, and win number
-    Inputs of row column and win number
     Single game of tic-tac-toe with no rewards on win or draw
     Use function computerFirstGame or humanFirstGame to choose who is first
     """
@@ -122,7 +121,11 @@ class Game:
                     print(self.p2.getName() + " has won")
                     boardObj.reset()
                     break
-
+    
+    """
+    updated version of human vs ai that uses pygame to display the board in a seperate window
+    allows mouse input to select location of move and spacebar reset
+    """
     def pgHumanvsAI(self, row, col, winNum,humanStart):
         font = pygame.font.SysFont(None, 24)
         text = font.render('', True, (255,255,255))
@@ -149,11 +152,13 @@ class Game:
                             state = 0
                             boardObj.reset()
                             humanTurn = humanStart
+                            boardTuple = [0,0]
                 if(pygame.mouse.get_pressed()[0]):
                     if(state>0):
                         state = 0
                         boardObj.reset()
                         humanTurn = humanStart
+                        boardTuple = [0,0]
                         time.sleep(0.5)
                     elif(humanTurn):
                         pos = pygame.mouse.get_pos()
@@ -303,8 +308,8 @@ def humanVsHumanGame(row,col,winNum):
 
 
 start = time.time()
-#trainAI(5000000,3,3,3,continueAITraining=True, savePolicy=True)
-humanFirstGame(3,3,3)
+trainAI(100000,3,3,3,continueAITraining=False, savePolicy=False)
+#humanFirstGame(3,3,3)
 #computerFirstGame(3,3,3)
 end = time.time()
 print(end - start)
