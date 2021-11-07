@@ -69,8 +69,7 @@ class AI:
     Returns a string for the filename consisting of policy followed by row, col,win number, and position of AI
     """
     def fileNaming(self, row, col,winNum,playerPos):
-        return "policy_"+str(row)+"_by_"+str(col)+"_"+str(winNum)+"_"+str(playerPos)+"_test"
-
+        return "policy_"+str(row)+"_by_"+str(col)+"_"+str(winNum)+"_"+str(playerPos)
 
     def savePolicy(self, row, col, winNum):
         fw = open(self.fileNaming(row, col, winNum, self.name),'wb')
