@@ -29,16 +29,10 @@ class AI:
         if (np.random.uniform(0,1) <= self.expRate):
             action = random.choice(tuple(positions))
         else:
-            #currentBoard = currentBoardObj.getBoard()
-            #posCopy = positions.copy()
             valueMax = -999
             for p in positions:
-                #nextBoard = currentBoard.copy()
                 boardTupleCopy = boardTuple.copy()
-
                 boardTupleCopy[symbol-1] = currentBoardObj.tempMove(symbol,p,boardTupleCopy[symbol-1])
-                #move(self,player,rowNum,colNum,playerBoardNum):
-                #nextBoardHash = self.getHash(nextBoard)
                 nextBoardTuple = tuple(boardTupleCopy)
                 if (self.statesValues.get(nextBoardTuple) is None):
                     value = 0
@@ -71,7 +65,7 @@ class AI:
     Returns a string for the filename consisting of policy followed by row, col,win number, and position of AI
     """
     def fileNaming(self, row, col,winNum,playerPos):
-        return "policy_"+str(row)+"_by_"+str(col)+"_"+str(winNum)+"_"+str(playerPos)+"_test"
+        return "policy_"+str(row)+"_by_"+str(col)+"_"+str(winNum)+"_"+str(playerPos)
 
 
     def savePolicy(self, row, col, winNum):
@@ -83,6 +77,7 @@ class AI:
         fr = open(self.fileNaming(row, col, winNum, user),'rb')
         self.statesValues = pickle.load(fr)
         fr.close()
+        
     
     """
     Input of board object And player

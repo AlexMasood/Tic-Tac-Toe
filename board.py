@@ -56,7 +56,6 @@ class Board:
     def tempMove(self,player,posTuple,playerBoardNum):
         rowNum = posTuple[0]
         colNum = posTuple[1]
-        self.board[rowNum][colNum] = player
         return (playerBoardNum|self.singleMoveDict.get((rowNum,colNum)))
 
     """
@@ -104,14 +103,3 @@ class Board:
             if(boardInt&ans == ans):
                 return True
         return False
-
-# s = set()
-
-# x = 0
-# start = time.time()
-# while x<100000000:
-#     if(len(s)==0):
-#         pass
-#     x+=1
-# end = time.time()
-# print(end - start)
