@@ -41,7 +41,7 @@ class Board:
         self.boardHash = None
         self.isEnd = False
     """
-    input of the board 3 by 3 numpy array, player int, row number int, column number int
+    input of player int, row number int, column number int, players board represented as a integer
     places move on the board
     removes the move from remaining moves
     no check required as legality is assumed true
@@ -52,7 +52,11 @@ class Board:
         self.board[rowNum][colNum] = player
         self.getRemainingMoves().remove((rowNum,colNum))
         return (playerBoardNum|self.singleMoveDict.get((rowNum,colNum)))
+    """
+    input of player int, row number int, column number int, players board represented as a integer
     
+    
+    """
     def tempMove(self,player,posTuple,playerBoardNum):
         rowNum = posTuple[0]
         colNum = posTuple[1]

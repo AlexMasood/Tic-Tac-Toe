@@ -31,10 +31,14 @@ class AI:
         else:
             valueMax = -999
             for p in positions:
-                boardTupleCopy = boardTuple.copy()
+                boardTupleCopy = [*boardTuple]
                 boardTupleCopy[symbol-1] = currentBoardObj.tempMove(symbol,p,boardTupleCopy[symbol-1])
                 nextBoardTuple = tuple(boardTupleCopy)
-                if (self.statesValues.get(nextBoardTuple) is None):
+                if(currentBoardObj.binaryCheck(boardTupleCopy[symbol-1])):
+                    value = 999
+                elif(currentBoardObj.binaryCheck(boardTupleCopy[symbol%2])):
+                    value = 999
+                elif (self.statesValues.get(nextBoardTuple) is None):
                     value = 0
                 else:
                     value = self.statesValues.get(nextBoardTuple)
@@ -65,7 +69,7 @@ class AI:
     Returns a string for the filename consisting of policy followed by row, col,win number, and position of AI
     """
     def fileNaming(self, row, col,winNum,playerPos):
-        return "policy_"+str(row)+"_by_"+str(col)+"_"+str(winNum)+"_"+str(playerPos)
+        return "policy_"+str(row)+"_by_"+str(col)+"_"+str(winNum)+"_"+str(playerPos)+"_test"
 
 
     def savePolicy(self, row, col, winNum):
@@ -89,4 +93,4 @@ class AI:
         moveCoord = random.choice(moveList)
         board.move(player,moveCoord[0],moveCoord[1])
         board.printBoard()
-        
+
