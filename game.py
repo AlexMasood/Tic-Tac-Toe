@@ -149,11 +149,13 @@ class Game:
                             state = 0
                             boardObj.reset()
                             humanTurn = humanStart
+                            boardTuple = [0,0]
                 if(pygame.mouse.get_pressed()[0]):
                     if(state>0):
                         state = 0
                         boardObj.reset()
                         humanTurn = humanStart
+                        boardTuple = [0,0]
                         time.sleep(0.5)
                     elif(humanTurn):
                         pos = pygame.mouse.get_pos()
@@ -302,8 +304,8 @@ def humanVsHumanGame(row,col,winNum):
 
 
 start = time.time()
-trainAI(100000,3,3,3,continueAITraining=False, savePolicy=False)
+#trainAI(100000,3,3,3,continueAITraining=False, savePolicy=False)
 #humanFirstGame(3,3,3)
-#computerFirstGame(3,3,3)
+computerFirstGame(3,3,3)
 end = time.time()
 print(end - start)
