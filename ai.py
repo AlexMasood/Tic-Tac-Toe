@@ -1,6 +1,7 @@
 import random
 import numpy as np
 import pickle
+
 """
 Implementation of reinforcement AI based on code created by MJeremy2017
 https://github.com/MJeremy2017/reinforcement-learning-implementation/blob/master/TicTacToe/tic-tac-toe.ipynb
@@ -30,14 +31,19 @@ class AI:
             action = random.choice(tuple(positions))
         else:
             valueMax = -999
+            #forcedMove = False
             for p in positions:
                 boardTupleCopy = [*boardTuple]
                 boardTupleCopy[symbol-1] = currentBoardObj.tempMove(symbol,p,boardTupleCopy[symbol-1])
                 nextBoardTuple = tuple(boardTupleCopy)
                 if(currentBoardObj.binaryCheck(boardTupleCopy[symbol-1])):
                     value = 999
+                    #forcedMove = True
+                    #print("forced move, take win")
                 elif(currentBoardObj.binaryCheck(boardTupleCopy[symbol%2])):
                     value = 999
+                    #forcedMove = True
+                    #print("forced move, block oponent")
                 elif (self.statesValues.get(nextBoardTuple) is None):
                     value = 0
                 else:
@@ -69,7 +75,7 @@ class AI:
     Returns a string for the filename consisting of policy followed by row, col,win number, and position of AI
     """
     def fileNaming(self, row, col,winNum,playerPos):
-        return "policy_"+str(row)+"_by_"+str(col)+"_"+str(winNum)+"_"+str(playerPos)
+        return "policy_"+str(row)+"_by_"+str(col)+"_"+str(winNum)+"_"+str(playerPos)+"_test"
 
     def savePolicy(self, row, col, winNum):
         fw = open(self.fileNaming(row, col, winNum, self.name),'wb')
@@ -92,4 +98,3 @@ class AI:
         moveCoord = random.choice(moveList)
         board.move(player,moveCoord[0],moveCoord[1])
         board.printBoard()
-

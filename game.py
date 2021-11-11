@@ -47,11 +47,12 @@ class Game:
         p2DictSize = len(self.p2.statesValues)
 
         for i in range(rounds):
-            if(i%100000 == 0):
+            if(i%10000 == 0):
                 print("rounds {}".format(i))
                 if(len(self.p1.statesValues)>p1DictSize):
                     print("p1 dictionary size: "+str(len(self.p1.statesValues)))
                     p1DictSize = len(self.p1.statesValues)
+                    print(str(p1DictSize/len(boardObj.getLegalTuple())*100)+"% routes completed")
                 if(len(self.p2.statesValues)>p2DictSize):
                     print("p2 dictionary size: "+str(len(self.p2.statesValues)))
                     p2DictSize = len(self.p2.statesValues)
@@ -308,7 +309,7 @@ def humanVsHumanGame(row,col,winNum):
 
 
 start = time.time()
-trainAI(100000,3,3,3,continueAITraining=False, savePolicy=False)
+trainAI(1000000,3,3,3,continueAITraining=False, savePolicy=False)
 #humanFirstGame(3,3,3)
 #computerFirstGame(3,3,3)
 end = time.time()
