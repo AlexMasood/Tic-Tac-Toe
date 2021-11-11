@@ -1,6 +1,7 @@
 import numpy as np
 import math
 import time
+from itertools import permutations
 class Board:
     def __init__(self,row = 3,col = 3,winNum = 3):
         self.board = np.zeros((row,col),dtype=int)
@@ -12,7 +13,10 @@ class Board:
         self.singleMoveDict = {}
         self.solutionSet = {448,273,292,146,84,73,56,7}
         self.remainingMoves = {(0, 1), (1, 2), (0, 0), (2, 1), (2, 0), (1, 1), (2, 2), (1, 0), (0, 2)}
+        self.legalTuples = set()
         self.populateSingleMoveDict()
+        self.allBoardStates()
+        
 
     def getBoard(self):
         return self.board
@@ -20,6 +24,16 @@ class Board:
     def printBoard(self):
         print(self.board)
     
+    def getLegalTuple(self):
+        return self.legalTuples
+    
+    def allBoardStates(self):
+        setList = [{0},set(),set(),set(),set(),set()]
+        for move in range(1,6):
+            self.boardPermutation(move,setList[move])
+        for moveNum in range(1,6):
+            self.possibleTupleCreation(setList[moveNum],setList[moveNum-1])
+
     """
     adds all potential moves and their respectibve board integer value to a dictionary
     """
@@ -48,7 +62,6 @@ class Board:
     places move on the board
     removes the move from remaining moves
     no check required as legality is assumed true
-    returns the value of the players board with the cordinates added
     """
     def move(self,player,posTuple,playerBoardNum):
         rowNum = posTuple[0]
@@ -58,10 +71,13 @@ class Board:
         return (playerBoardNum|self.singleMoveDict.get((rowNum,colNum)))
     """
     input of player int, row number int, column number int, players board represented as a integer
-    returns the value of the players board with the cordinates added
+    returns a integer of the players board with the added given move coordinates
+    
     """
     def tempMove(self,player,posTuple,playerBoardNum):
-        return (playerBoardNum|self.singleMoveDict.get((posTuple[0],posTuple[1])))
+        rowNum = posTuple[0]
+        colNum = posTuple[1]
+        return (playerBoardNum|self.singleMoveDict.get((rowNum,colNum)))
 
     """
     row number int, row column int
@@ -113,3 +129,20 @@ class Board:
             if(boardInt&ans == ans):
                 return True
         return False
+
+
+    def boardPermutation(self,numOfOnes,set):
+        allPermutations = list(permutations(("1"*numOfOnes)+("0"*(9-numOfOnes))))
+        for i in allPermutations:
+            singleArrayBoard = ''.join(i)
+            boardInt = int("0b"+''.join(map(str, singleArrayBoard)),2)
+            set.add(boardInt)
+
+
+    def possibleTupleCreation(self,firstNumberSet,secondNumberSet):
+        for first in firstNumberSet:
+            for second in secondNumberSet:
+                if(self.binaryCheck(second)):
+                    pass
+                elif(first&second == 0):
+                    self.legalTuples.add((first,second))

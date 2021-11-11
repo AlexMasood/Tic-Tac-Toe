@@ -47,11 +47,12 @@ class Game:
         p2DictSize = len(self.p2.statesValues)
 
         for i in range(rounds):
-            if(i%100000 == 0):
+            if(i%10000 == 0):
                 print("rounds {}".format(i))
                 if(len(self.p1.statesValues)>p1DictSize):
                     print("p1 dictionary size: "+str(len(self.p1.statesValues)))
                     p1DictSize = len(self.p1.statesValues)
+                    print(str(p1DictSize/len(boardObj.getLegalTuple())*100)+"% routes completed")
                 if(len(self.p2.statesValues)>p2DictSize):
                     print("p2 dictionary size: "+str(len(self.p2.statesValues)))
                     p2DictSize = len(self.p2.statesValues)
@@ -85,7 +86,6 @@ class Game:
     
     """
     Inputs of board rows, board columns, and win number
-    Inputs of row column and win number
     Single game of tic-tac-toe with no rewards on win or draw
     Use function computerFirstGame or humanFirstGame to choose who is first
     """
@@ -122,7 +122,11 @@ class Game:
                     print(self.p2.getName() + " has won")
                     boardObj.reset()
                     break
-
+    
+    """
+    updated version of human vs ai that uses pygame to display the board in a seperate window
+    allows mouse input to select location of move and spacebar reset
+    """
     def pgHumanvsAI(self, row, col, winNum,humanStart):
         font = pygame.font.SysFont(None, 24)
         text = font.render('', True, (255,255,255))
@@ -303,9 +307,10 @@ def humanVsHumanGame(row,col,winNum):
     st.humanVsHuman(row,col, winNum)
 
 
+
 start = time.time()
-#trainAI(100000,3,3,3,continueAITraining=False, savePolicy=False)
+trainAI(1000000,3,3,3,continueAITraining=False, savePolicy=False)
 #humanFirstGame(3,3,3)
-computerFirstGame(3,3,3)
+#computerFirstGame(3,3,3)
 end = time.time()
 print(end - start)
